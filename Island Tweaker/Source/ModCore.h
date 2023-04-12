@@ -1,9 +1,10 @@
+
+#ifndef ModCore_H
+#define ModCore_H
 #include "pch.h"
+#define Log(message) std::cout << message << std::endl;
 #include <iostream>
 #include <array>
-#pragma once
-#define Log(message) std::cout << message << std::endl;
-
 using u64 = uint64_t;
 using u32 = uint32_t;
 
@@ -11,23 +12,14 @@ struct Vector3 {
 	float x;
 	float y;
 	float z;
-	bool operator==(Vector3 const& mult) {
-		return this->x == mult.x && this->y == mult.y && this->z == mult.z;
-	}
-	bool operator!=(Vector3 const& mult) {
-		return !(this->x == mult.x && this->y == mult.y && this->z == mult.z);
-	}
-	Vector3(float mX, float mY, float mZ)
-		:x(mX),
-		y(mY),
-		z(mZ)
-	{}
+	bool operator==(Vector3 const& mult);
+	bool operator!=(Vector3 const& mult);
+	Vector3(float mX, float mY, float mZ);
 };
 
 namespace configuration {
-	float rangeMultiplier, enemyRangeMultiplier, collectibleRangeMultiplier = 0.0f;
-	bool popInStabilityMode, removeCamTriggers, removeDashPanels, remove2D, forceSpringHoming, forceClassicSprings = false;
-}
+	extern bool popInStabilityMode;
+};
 
 struct Transform {
 	Vector3 position;
@@ -44,12 +36,8 @@ struct Tag {
 struct RangeSpawning {
 	float rangeIn;
 	float rangeOut;
-	RangeSpawning& operator*=(float const& mult) {
-		const float multMax = configuration::popInStabilityMode ? 900.0f : 0;
-		this->rangeIn = std::clamp(this->rangeIn * mult, 0.0f, max(this->rangeIn, multMax));
-		this->rangeOut = std::clamp(this->rangeOut * mult, 0.0f, max(this->rangeOut, multMax));
-		return *this;
-	}
+	RangeSpawning& operator*=(float const& mult);
+	void Clamp();
 };
 
 struct Object {
@@ -97,3 +85,4 @@ struct ObjSpringClassicSpawner {
 };
 
 bool Contains(const char* array[], int size, const char* item);
+#endif

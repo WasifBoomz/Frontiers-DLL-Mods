@@ -78,3 +78,15 @@ const char* springs[] = {
 const char* classicSprings[] = {
 	"SpringClassic",
 };
+const char* excludeFromStability[] = {
+	"Path",
+	"PathCircle",
+	"PathConnector",
+	"PathLine",
+	"PathLoop",
+	"PathNode",
+	"PathPolygon",
+	"PathSpiral",
+	"AirFloor",
+	"AirWall"
+};

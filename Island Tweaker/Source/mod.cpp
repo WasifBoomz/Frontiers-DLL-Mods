@@ -1,6 +1,5 @@
-#include "ObjData.h";
 #include "ModCore.h";
-#pragma once
+#include "ObjData.h"
 
 FUNCTION_PTR(Tag*, __fastcall, GetTag, 0x140BD6C60, Object* object, const char* tag);
 
@@ -8,9 +7,20 @@ int count = 0;
 bool protectRange = false;
 std::array<unsigned char, 16> exTestId;
 std::array<unsigned char, 16> testId;
+
+float multiplier;
+
+const float multMax = 900.0f;
+
+void RangeSpawning::Clamp() {
+	this->rangeIn = std::clamp(this->rangeIn, 0.0f, max(this->rangeIn/multiplier, multMax));
+	this->rangeOut = std::clamp(this->rangeOut, 0.0f, max(this->rangeOut / multiplier, multMax));
+}
+
 extern "C" {
 	__declspec(dllexport) void LevelStart();
 }
+
 SIG_SCAN
 (
 	sigsub_1407A9510,
@@ -25,7 +35,10 @@ HOOK(__int64, __fastcall, Ground, sigsub_1407A9510(), __int64 a1, __int64 a2, fl
 	}
 	return originalGround(a1, a2, a3);
 }
-
+namespace configuration {
+	float rangeMultiplier, enemyRangeMultiplier, collectibleRangeMultiplier = 0.0f;
+	bool popInStabilityMode, removeCamTriggers, removeDashPanels, remove2D, forceSpringHoming, forceClassicSprings = false;
+};
 SIG_SCAN
 (
 	sigsub_1401BE650,
@@ -36,14 +49,13 @@ SIG_SCAN
 HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* object) {
 	//Prevent repeated multiplication of object range with the training simulator.
 	if (count++ == 0) {
-		protectRange = exTestId == object->id;
+		protectRange = exTestId == object->id && testId != object->id;
 		exTestId = testId;
 		testId = object->id;
 	}	
 	const char* type = object->type;
 	RangeSpawning* data = (RangeSpawning*)GetTag(object, "RangeSpawning")->data;
 	if (!protectRange) {
-		float multiplier;
 		if (!Contains(exclude, sizeof(exclude) / sizeof(const char*), type)) {
 			if (Contains(enemies, sizeof(enemies) / sizeof(const char*), type)) {
 				multiplier = configuration::enemyRangeMultiplier;
@@ -56,6 +68,9 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 			}
 		}
 		*data *= multiplier;
+		if (!Contains(excludeFromStability, sizeof(excludeFromStability) / sizeof(const char*), type)&&configuration::popInStabilityMode) {
+			data->Clamp();
+		}
 	}
 	if ((configuration::removeCamTriggers && Contains(cameraTriggers, sizeof(cameraTriggers) / sizeof(const char*), type)) ||
 		(configuration::removeDashPanels && Contains(dashPanels, sizeof(dashPanels) / sizeof(const char*), type))||
