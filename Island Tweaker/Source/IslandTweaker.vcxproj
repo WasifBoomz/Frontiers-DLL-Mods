@@ -76,7 +76,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>C:\SteamLibrary\steamapps\common\SonicFrontiers\Mods\Custom Pop-In\</OutDir>
+    <OutDir>C:\SteamLibrary\steamapps\common\SonicFrontiers\Mods\Island Tweaker\</OutDir>
+    <IntDir>$(ProjectDir)bin</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -85,7 +86,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>C:\SteamLibrary\steamapps\common\SonicFrontiers\Mods\Custom Pop-In\</OutDir>
+    <OutDir>C:\SteamLibrary\steamapps\common\SonicFrontiers\Mods\Island Tweaker\</OutDir>
+    <IntDir>$(ProjectDir)bin</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -116,12 +118,15 @@
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Dependencies;$(SolutionDir)Dependencies\Detours\include;$(SolutionDir)Dependencies\Loaders;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>Pch.h</ForcedIncludeFiles>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>detours.lib;syelog.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Detours\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>$(ProjectDir)bin/blah.pdb</ProgramDatabaseFile>
+      <ImportLibrary>$(ProjectDir)bin/blah.lib</ImportLibrary>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -171,6 +176,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Dependencies;$(SolutionDir)Dependencies\Detours\include;$(SolutionDir)Dependencies\Loaders;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>Pch.h</ForcedIncludeFiles>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -179,6 +185,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>detours.lib;syelog.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Detours\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ProgramDatabaseFile>$(ProjectDir)bin/blah.pdb</ProgramDatabaseFile>
+      <ImportLibrary>$(ProjectDir)bin/blah.lib</ImportLibrary>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -192,6 +200,7 @@
   <ItemGroup>
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="mod.cpp" />
+    <ClCompile Include="ModCore.cpp" />
     <ClCompile Include="Pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
@@ -204,6 +213,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ModCore.h" />
+    <ClInclude Include="ObjData.h" />
     <ClInclude Include="Pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
