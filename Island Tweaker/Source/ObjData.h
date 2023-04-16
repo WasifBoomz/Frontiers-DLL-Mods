@@ -90,3 +90,9 @@ const char* excludeFromStability[] = {
 	"AirFloor",
 	"AirWall"
 };
+const char* fans[] = {
+	"Fan"
+};
+const char* wallJump[] = {
+	"WallJumpBlock" 
+};
