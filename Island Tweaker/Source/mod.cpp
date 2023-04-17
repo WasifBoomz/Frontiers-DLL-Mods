@@ -71,6 +71,9 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 				multiplier = configuration::rangeMultiplier;
 			}
 		}
+		else {
+			multiplier = 1;
+		}
 		*data *= multiplier;
 		if (!Contains(excludeFromStability, sizeof(excludeFromStability) / sizeof(const char*), type) && configuration::popInStabilityMode) {
 			data->Clamp();
