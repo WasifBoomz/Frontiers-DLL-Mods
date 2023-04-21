@@ -201,6 +201,7 @@
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="ModCore.cpp" />
+    <ClCompile Include="ObjStructs.cpp" />
     <ClCompile Include="Pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
@@ -215,6 +216,7 @@
   <ItemGroup>
     <ClInclude Include="ModCore.h" />
     <ClInclude Include="ObjData.h" />
+    <ClInclude Include="ObjStructs.h" />
     <ClInclude Include="Pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

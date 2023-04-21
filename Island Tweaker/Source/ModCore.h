@@ -1,4 +1,3 @@
-
 #ifndef ModCore_H
 #define ModCore_H
 #include "pch.h"
@@ -8,6 +7,7 @@
 #include <vector>
 using u64 = uint64_t;
 using u32 = uint32_t;
+using u16 = uint16_t;
 
 struct Vector3 {
 	float x;
@@ -54,84 +54,11 @@ struct Object {
 	void* paramData;
 };
 
-struct ObjSpringSpawner {
-	u32 visual;
-	float firstSpeed;
-	float outOfControl;
-	float keepVelocityDistance;
-	bool isHoming;
-	bool isEventOn;
-	bool isCyloopOn;
-	float cyloopSignDistance;
-	float cyloopSignTolerance;
-	bool isHorizon;
-	bool airtrick;
-	bool isVisible;
-	bool isSmooth;
-	void* actions;
-	float rollingSpeed;
-	float rollingPhase;
-};
-
-struct ObjSpringClassicSpawner {
-	u32 visual;
-	float firstSpeed;
-	float outOfControl;
-	float keepVelocityDistance;
-	bool usedYaw;
-	bool isEventOn;
-	bool isHorizon;
-	bool isVisible;
-	void* actions;
-};
-
-struct VolumeTriggerSpawner {
-	u32 ShapeType;
-	u32 basePoint; 
-	u32 CollisionFilter;
-	float collisionWidth;
-	float collisionHeight;
-	float collisionDepth;
-	Vector3 collisionOffset;
-};
-
-struct ObjDimensionVolumeSpawner {
-	bool isSideview;
-	u32 priority;
-	const char* pathName;
-	u32 state;
-	u32 action;
-	VolumeTriggerSpawner volume;
-};
-
-struct PathMovement {
-	u32 moveType;
-	const char* pathName;
-	void* locaterList;
-	Vector3 twoPointOffset;
-	u32 patrolType;
-	u32 timeType;
-	bool eventDriven;
-	bool isReverse;
-	float waitTime;
-	float phase;
-	float speed;
-	float killWaitTSecOneway;
-};
-struct ObjFanSpawner {
-	u32 type;
-	u32 place;
-	float length;
-	float velocity;
-	float durOn;
-	float durOff;
-	float phase;
-	bool eventDriven;
-	ObjFanSpawner(u32 m_type, u32 m_place, float m_length, float m_velocity, float m_durOn, float m_durOff, float m_phase, bool m_eventDriven);
-};
-struct ObjWallJumpBlockSpawner {
-	float width;
-	float height;
+struct GeditArray {
+	u64 unknown1;
+	u64 unknown2;
+	u64 unknown3;
+	u64 unknown4;
 };
 bool Contains(const char* array[], int size, const char* item);
 #endif

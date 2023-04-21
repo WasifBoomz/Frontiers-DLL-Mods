@@ -1,6 +1,6 @@
 #include "ModCore.h";
 #include "ObjData.h"
-
+#include "ObjStructs.h"
 FUNCTION_PTR(Tag*, __fastcall, GetTag, 0x140BD6C60, Object* object, const char* tag);
 
 int count = 0;
@@ -14,7 +14,7 @@ const float multMax = 900.0f;
 float lastRangeIn;
 namespace configuration {
 	float rangeMultiplier, enemyRangeMultiplier, collectibleRangeMultiplier = 0.0f;
-	bool popInStabilityMode, removeCamTriggers, removeDashPanels, remove2D, forceSpringHoming, forceClassicSprings = false;
+	bool popInStabilityMode, removeCamTriggers, removeDashPanels, remove2D, forceSpringHoming, forceClassicSprings, nightChallengeRemoval = false;
 	std::map<int, int> gearReplacements;
 };
 
@@ -79,8 +79,7 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 			data->Clamp();
 		}
 		if ((configuration::removeCamTriggers && Contains(cameraTriggers, sizeof(cameraTriggers) / sizeof(const char*), type)) ||
-			(configuration::removeDashPanels && Contains(dashPanels, sizeof(dashPanels) / sizeof(const char*), type)) ||
-			(configuration::remove2D && Contains(dimensionVolumes, sizeof(dimensionVolumes) / sizeof(const char*), type)))
+			(configuration::removeDashPanels && Contains(dashPanels, sizeof(dashPanels) / sizeof(const char*), type)))
 		{
 			*data *= 0;
 		}
@@ -88,10 +87,27 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 			//This doesn't work in the "normal" way so let's do this instead.
 			(*(ObjSpringSpawner**)((u64)object + 0x90))->isHoming = true;
 		}
-		if (configuration::remove2D && Contains(wallJump, sizeof(wallJump) / sizeof(const char*), type)) {
-			//Only the first two values end up mattering lol :C
-			(*(ObjFanSpawner**)((u64)object + 0x90)) = new ObjFanSpawner(0, 1, 500.0f, 500.0f, 1, 1, 1, false);
-			object->type = "Fan";
+		if (configuration::remove2D) {
+			if (!std::strcmp(type, "WallJumpBlock")) {
+				//Only the first two values end up mattering lol :C
+				(*(ObjFanSpawner**)((u64)object + 0x90)) = new ObjFanSpawner(0, 1, NULL, NULL, NULL, NULL, NULL, NULL);
+				object->type = "Fan";
+			}
+			if (!std::strcmp(type, "DimensionVolume")) {
+				*data *= 0;
+			}
+		}
+		if (configuration::nightChallengeRemoval) {
+			if (!std::strcmp(type, "GimmickInfo")) {
+				(*(ObjGimmickInfoSpawner**)((u64)object + 0x90))->playType = 0;
+			}
+			if (!std::strcmp(type, "SlashCommon")) {
+				(*(ObjSlashCommonSpawner**)((u64)object + 0x90))->isLimitedTime = false;
+			}
+			if (!std::strcmp(type, "GuideLight")) {
+				Log((*(ObjGuideLightSpawner**)((u64)object + 0x90)));
+				(*(ObjGuideLightSpawner**)((u64)object + 0x90))->isLimitedTime = false;
+			}
 		}
 		//if (configuration::remove2D) {
 		//	float dimensionSize = objDimensions.size();
@@ -139,6 +155,7 @@ extern "C" {
 		configuration::removeDashPanels = reader.GetBoolean("objectRemoval", "dashPanels", false);
 		configuration::remove2D = reader.GetBoolean("objectRemoval", "2D", false);
 		configuration::forceSpringHoming = reader.GetBoolean("objectTweaks", "springHoming", false);
+		configuration::nightChallengeRemoval = reader.GetBoolean("challengeTweaks", "nightChallengeRemoval", false);
 		INSTALL_HOOK(Ground);
 		INSTALL_HOOK(LevelLoad);
 	}

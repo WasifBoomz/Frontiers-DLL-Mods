@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ObjData_H
+#define ObjData_H
 const char* enemies[] = {
 	"Aquaball",
 	"Batabata",
@@ -75,9 +76,6 @@ const char* springs[] = {
 	"DragonRoadSpring",
 	"SpiderSpring"
 };
-const char* classicSprings[] = {
-	"SpringClassic",
-};
 const char* excludeFromStability[] = {
 	"Path",
 	"PathCircle",
@@ -90,9 +88,4 @@ const char* excludeFromStability[] = {
 	"AirFloor",
 	"AirWall"
 };
-const char* fans[] = {
-	"Fan"
-};
-const char* wallJump[] = {
-	"WallJumpBlock" 
-};
+#endif
