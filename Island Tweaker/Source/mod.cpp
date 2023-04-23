@@ -56,7 +56,6 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 	//Prevent repeated multiplication of object range with the training simulator.
 	if (count++ == 0) {
 		lastRangeIn = data->rangeIn;
-		protectRange = prevCount == count;
 	}
 	const char* type = object->type;
 	if (!protectRange) {
@@ -105,7 +104,6 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 				(*(ObjSlashCommonSpawner**)((u64)object + 0x90))->isLimitedTime = false;
 			}
 			if (!std::strcmp(type, "GuideLight")) {
-				Log((*(ObjGuideLightSpawner**)((u64)object + 0x90)));
 				(*(ObjGuideLightSpawner**)((u64)object + 0x90))->isLimitedTime = false;
 			}
 		}
@@ -162,7 +160,7 @@ extern "C" {
 	__declspec(dllexport) void LevelStart()
 	{
 		protectRange = (lastRangeIn == 500 && !loadedIntoCyberspace);
-		protectRange = count = 0;
+		count = 0;
 		loadedIntoCyberspace = true;
 	}
 }
