@@ -1,6 +1,6 @@
 #include "Core.h"
 #define QWORD __int64
-float excludeFrames[] = {446, 1067, 890, 764, 2451, 1092};
+float excludeFrames[] = {146,446, 1067, 890, 764, 2451, 1092};
 SIG_SCAN
 (
 	sigsub_140C31B80,
