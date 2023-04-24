@@ -14,7 +14,7 @@ const float multMax = 900.0f;
 float lastRangeIn;
 namespace configuration {
 	float rangeMultiplier, enemyRangeMultiplier, collectibleRangeMultiplier = 0.0f;
-	bool popInStabilityMode, removeCamTriggers, removeDashPanels, remove2D, forceSpringHoming, forceClassicSprings, nightChallengeRemoval = false;
+	bool refuseFreeze, popInStabilityMode, removeCamTriggers, removeDashPanels, remove2D, forceSpringHoming, forceClassicSprings, nightChallengeRemoval = false;
 	std::map<int, int> gearReplacements;
 };
 
@@ -58,7 +58,8 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 		lastRangeIn = data->rangeIn;
 	}
 	const char* type = object->type;
-	if (!protectRange) {
+	bool refuseObject = false;
+	if (!protectRange && !refuseObject) {
 		if (!Contains(exclude, sizeof(exclude) / sizeof(const char*), type)) {
 			if (Contains(enemies, sizeof(enemies) / sizeof(const char*), type)) {
 				multiplier = configuration::enemyRangeMultiplier;
@@ -73,7 +74,6 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 		else {
 			multiplier = 1;
 		}
-		*data *= multiplier;
 		if (!Contains(excludeFromStability, sizeof(excludeFromStability) / sizeof(const char*), type) && configuration::popInStabilityMode) {
 			data->Clamp();
 		}
@@ -107,6 +107,17 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 				(*(ObjGuideLightSpawner**)((u64)object + 0x90))->isLimitedTime = false;
 			}
 		}
+		if (configuration::removeCamTriggers) {
+			if (!std::strcmp(type, "CameraActivator")) {
+				(*(ObjCameraActivatorSpawner**)((u64)object + 0x90))->lifeTime = 0.0f;
+			}
+		}
+		if (configuration::refuseFreeze) {
+			if (!std::strcmp(type, "TimerSwitch")) {
+				(*(ObjTimerSwitchSpawner**)((u64)object + 0x90))->startWaitTime = 0.5f;
+			}
+		}
+		*data *= multiplier;
 		//if (configuration::remove2D) {
 		//	float dimensionSize = objDimensions.size();
 		//	float wallJumpSize = objWallJumpsBlocks.size();
@@ -136,6 +147,18 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 	}
 	return originalLevelLoad(a1, object);
 }
+
+SIG_SCAN
+(
+	sigsub_14BD19820,
+	0x14BD19820,
+	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x50\x48\x89\xD7\x48\x89\xCB\xBA\x9B\x21\x00\x00\x48\x8D\x4C\x24\x20\xE8\x11\x82\x05\xF5\x48",
+	"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+)
+HOOK(__int64, __fastcall, HoldPlayer, sigsub_14BD19820(), __int64 a1, __int64 a2) {
+	return a1;
+}
+
 extern "C" {
 	__declspec(dllexport) void Init()
 	{
@@ -154,8 +177,12 @@ extern "C" {
 		configuration::remove2D = reader.GetBoolean("objectRemoval", "2D", false);
 		configuration::forceSpringHoming = reader.GetBoolean("objectTweaks", "springHoming", false);
 		configuration::nightChallengeRemoval = reader.GetBoolean("challengeTweaks", "nightChallengeRemoval", false);
+		configuration::refuseFreeze = reader.GetBoolean("objectTweaks", "refuseFreeze", false);
 		INSTALL_HOOK(Ground);
 		INSTALL_HOOK(LevelLoad);
+		if (configuration::refuseFreeze) {
+			INSTALL_HOOK(HoldPlayer);
+		}
 	}
 	__declspec(dllexport) void LevelStart()
 	{

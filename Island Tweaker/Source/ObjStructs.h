@@ -122,4 +122,36 @@ struct ObjGuideLightSpawner {
 	u32 endMin;
 	float delayTime;
 };
+struct ObjEventSpawner {
+	u32 no;
+	u32 padding;
+	const char* eventId;
+	const char* pageName;
+	u32 pageIndex;
+	bool useDefaultPath;
+	bool showEnemy;
+	bool playerAfterIdle;
+	bool isSkipDisable;
+	bool isFrozen;
+};
+struct ObjCameraActivatorSpawner {
+	ObjectReference reference;
+	u32 type;
+	u32 priority;
+	alignas (4) bool useHighPriority;
+	float delayTime;
+	alignas (4) bool enableLifeTime;
+	float lifeTime;
+	bool disableControl;
+	char disableType;
+	char isPause;
+	//more stuff
+};
+struct ObjTimerSwitchSpawner {
+	u32 no;
+	float activateTime;
+	alignas(8) bool isUseStartCamera;
+	ObjectReference startCamera;
+	float startWaitTime;
+};
 #endif

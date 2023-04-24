@@ -59,7 +59,6 @@ const char* cameraTriggers[] = {
 	"CameraVolume",
 	"CameraVolumeOnce",
 	"CameraVolumeSub",
-	"CameraActivator"
 };
 const char* dashPanels[] = {
 	"DashPanel",

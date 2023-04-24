@@ -4,11 +4,9 @@
 #define Log(message) std::cout << message << std::endl;
 #include <iostream>
 #include <array>
-#include <vector>
 using u64 = uint64_t;
 using u32 = uint32_t;
 using u16 = uint16_t;
-
 struct Vector3 {
 	float x;
 	float y;
@@ -40,7 +38,6 @@ struct RangeSpawning {
 	RangeSpawning& operator*=(float const& mult);
 	void Clamp();
 };
-
 struct Object {
 	u32 unknown1;
 	u32 unknown2;
@@ -59,6 +56,10 @@ struct GeditArray {
 	u64 unknown2;
 	u64 unknown3;
 	u64 unknown4;
+};
+struct ObjectReference {
+	u64 unknown1;
+	u64 unknown2;
 };
 bool Contains(const char* array[], int size, const char* item);
 #endif
