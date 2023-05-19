@@ -38,6 +38,7 @@ struct RangeSpawning {
 	RangeSpawning& operator*=(float const& mult);
 	void Clamp();
 };
+
 struct Object {
 	u32 unknown1;
 	u32 unknown2;
@@ -49,6 +50,14 @@ struct Object {
 	Transform transformOffset;
 	alignas(32) Tag* tags;
 	void* paramData;
+};
+
+struct World {
+	alignas(16) u64 unknown1;
+	Object** objects;
+	u64 count;
+	u64 capacity;
+	void* allocatorPtr;
 };
 
 struct GeditArray {

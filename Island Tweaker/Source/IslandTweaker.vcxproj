@@ -214,6 +214,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="mod.h" />
     <ClInclude Include="ModCore.h" />
     <ClInclude Include="ObjData.h" />
     <ClInclude Include="ObjStructs.h" />

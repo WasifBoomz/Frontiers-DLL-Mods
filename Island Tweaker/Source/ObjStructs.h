@@ -134,6 +134,13 @@ struct ObjEventSpawner {
 	bool isSkipDisable;
 	bool isFrozen;
 };
+struct InterpolateSettings {
+	float easeTimeOn;
+	float easeTimeOff;
+	char interpolateTypeOn;
+	char interpolateTypeOff;
+	bool useReturnCamera;
+};
 struct ObjCameraActivatorSpawner {
 	ObjectReference reference;
 	u32 type;
@@ -145,7 +152,9 @@ struct ObjCameraActivatorSpawner {
 	bool disableControl;
 	char disableType;
 	char isPause;
-	//more stuff
+	char padding1;
+	u32 padding2;
+	InterpolateSettings interpolate;
 };
 struct ObjTimerSwitchSpawner {
 	u32 no;
@@ -153,5 +162,26 @@ struct ObjTimerSwitchSpawner {
 	alignas(8) bool isUseStartCamera;
 	ObjectReference startCamera;
 	float startWaitTime;
+};
+struct ObjMonologueVolumeSpawner {
+	u32 no;
+	const char* labelName;
+	u32 padding1;
+	ObjectReference target;
+	u32 priority;
+	alignas(4) bool useHighPriority;
+	float easeTimeEnter;
+	float easeTimeLeave;
+	char interpolateTypeEnter;
+	char interpolateTypeLeave;
+	bool endbyLeave;
+	bool endByTime;
+	float endTime;
+	bool endByCaption;
+	char hold;
+	bool useLetterBox;
+	char padding2;
+	u32 padding3;
+	VolumeTriggerSpawner volume;
 };
 #endif
