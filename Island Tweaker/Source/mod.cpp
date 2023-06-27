@@ -1,5 +1,5 @@
 #include "mod.h"
-FUNCTION_PTR(Tag*, __fastcall, GetTag, 0x140BD6C60, Object* object, const char* tag);
+FUNCTION_PTR(Tag*, __fastcall, GetTag, sigsub_15017FC10(), Object* object, const char* tag);
 
 int count = 0;
 float multiplier;
@@ -22,7 +22,7 @@ void RangeSpawning::Clamp() {
 
 #pragma region "Hooks"
 
-HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* object) {
+HOOK(Object*, __fastcall, LevelLoad, sigsub_1401D64C0(), __int64 a1, Object* object) {
 	RangeSpawning* data = (RangeSpawning*)GetTag(object, "RangeSpawning")->data;
 	//Prevent repeated multiplication of object range with the training simulator.
 	if (count++ == 0) {
@@ -136,14 +136,14 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401BE650(), __int64 a1, Object* obj
 	}
 	return originalLevelLoad(a1, object);
 }
-HOOK(__int64, __fastcall, HoldPlayer, sigsub_14BD19820(), __int64 a1, __int64 a2) {
+HOOK(__int64, __fastcall, HoldPlayer, sigsub_14BDFF550(), __int64 a1, __int64 a2) {
 	return a1;
 }
 
-HOOK(u64, __fastcall, IslandLoad, sigsub_1479E9C70(), u64 a1, u64 a2, u64 a3) {
+HOOK(u64, __fastcall, IslandLoad, sigsub_147967010(), u64 a1, u64 a2, u64 a3) {
 	count = 0;
 	applyNext = true;
-	return originalIslandLoad(a1, a2, a3);;
+	return originalIslandLoad(a1, a2, a3);
 }
 #pragma endregion "Hooks"
 

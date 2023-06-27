@@ -22,6 +22,6 @@
 
 #include <Helpers.h>
 
-#include <SigScan.h>
+#include <Signature.h>
 #include "util.h"
 #endif //PCH_H

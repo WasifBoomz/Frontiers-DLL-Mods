@@ -45,7 +45,7 @@ const char* enemies[] = {
 	"TheEnd"
 };
 const char* exclude[] = {
-	"SlotStar"
+	"SlotStar",
 };
 const char* collectibles[] = {
 	"SequenceItem",
