@@ -22,7 +22,9 @@ RangeSpawning& RangeSpawning::operator*=(float const& mult) {
 	//const float multMax = configuration::popInStabilityMode ? 1000.0f : 10000.0f;
 	//this->rangeIn = std::clamp(this->rangeIn * mult, 0.0f, max(this->rangeIn, multMax));
 	//this->rangeOut = std::clamp(this->rangeOut * mult, 0.0f, max(this->rangeOut, multMax));
-	this->rangeIn *= mult;
-	this->rangeOut *= mult;
+	if(fmod(this->rangeIn,1)==0)
+		this->rangeIn *= mult;
+	if (fmod(this->rangeOut, 1) == 0)
+		this->rangeOut *= mult;
 	return *this;
 }

@@ -36,7 +36,7 @@ struct RangeSpawning {
 	float rangeIn;
 	float rangeOut;
 	RangeSpawning& operator*=(float const& mult);
-	void Clamp();
+	void Clamp(float multiplier);
 };
 
 struct Object {

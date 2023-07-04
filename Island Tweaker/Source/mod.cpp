@@ -1,8 +1,8 @@
 #include "mod.h"
 FUNCTION_PTR(Tag*, __fastcall, GetTag, sigsub_15017FC10(), Object* object, const char* tag);
-
+FUNCTION_PTR(u64, __fastcall, sub_140C610D0, sigsub_140C610D0(), u64 a1, u64 a2);
+FUNCTION_PTR(char, __fastcall, sub_1503F29B0, sigsub_1503F29B0(), u64 a1);
 int count = 0;
-float multiplier;
 const float multMax = 900.0f;
 
 Object* lastObj;
@@ -10,12 +10,12 @@ Object* lastObj;
 bool applyNext = true;
 
 namespace configuration {
-	float rangeMultiplier, enemyRangeMultiplier, collectibleRangeMultiplier = 0.0f;
+	float rangeMultiplier, enemyRangeMultiplier = 0.0f;
 	bool refuseFreeze, noHoldMonologue, popInStabilityMode, removeCamTriggers, removeDashPanels, remove2D, forceSpringHoming, forceClassicSprings, nightChallengeRemoval = false;
 	std::map<int, int> gearReplacements;
 };
 
-void RangeSpawning::Clamp() {
+void RangeSpawning::Clamp(float multiplier) {
 	this->rangeIn = std::clamp(this->rangeIn, 0.0f, max(this->rangeIn / multiplier, multMax));
 	this->rangeOut = std::clamp(this->rangeOut, 0.0f, max(this->rangeOut / multiplier, multMax));
 }
@@ -23,7 +23,6 @@ void RangeSpawning::Clamp() {
 #pragma region "Hooks"
 
 HOOK(Object*, __fastcall, LevelLoad, sigsub_1401D64C0(), __int64 a1, Object* object) {
-	RangeSpawning* data = (RangeSpawning*)GetTag(object, "RangeSpawning")->data;
 	//Prevent repeated multiplication of object range with the training simulator.
 	if (count++ == 0) {
 		if (lastObj != nullptr) {
@@ -38,24 +37,10 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401D64C0(), __int64 a1, Object* obj
 	}
 	const char* type = object->type;
 	bool refuseObject = false;
-	if (applyNext) {
-		if (!Contains(exclude, sizeof(exclude) / sizeof(const char*), type)) {
-			if (Contains(enemies, sizeof(enemies) / sizeof(const char*), type)) {
-				multiplier = configuration::enemyRangeMultiplier;
-			}
-			else if (Contains(collectibles, sizeof(collectibles) / sizeof(const char*), type)) {
-				multiplier = configuration::collectibleRangeMultiplier;
-			}
-			else {
-				multiplier = configuration::rangeMultiplier;
-			}
-		}
-		else {
-			multiplier = 1;
-		}
-		if (!Contains(excludeFromStability, sizeof(excludeFromStability) / sizeof(const char*), type) && configuration::popInStabilityMode) {
-			data->Clamp();
-		}
+	u64 v4 = sub_140C610D0(*(u64*)(*((u64*)0x143C25B10) + 296), *(u64*)((u64)object + 8));
+	if (applyNext && (!v4 || sub_1503F29B0(v4))) {
+		RangeSpawning* data = (RangeSpawning*)GetTag(object, "RangeSpawning")->data;
+
 		if ((configuration::removeCamTriggers && Contains(cameraTriggers, sizeof(cameraTriggers) / sizeof(const char*), type)) ||
 			(configuration::removeDashPanels && Contains(dashPanels, sizeof(dashPanels) / sizeof(const char*), type)))
 		{
@@ -68,7 +53,6 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401D64C0(), __int64 a1, Object* obj
 		if (configuration::remove2D) {
 			if (!std::strcmp(type, "WallJumpBlock")) {
 				//Only the first two values end up mattering lol :C
-				(*(ObjFanSpawner**)((u64)object + 0x90)) = new ObjFanSpawner(0, 1, NULL, NULL, NULL, NULL, NULL, NULL);
 				object->type = "Fan";
 			}
 			if (!std::strcmp(type, "DimensionVolume")) {
@@ -106,7 +90,16 @@ HOOK(Object*, __fastcall, LevelLoad, sigsub_1401D64C0(), __int64 a1, Object* obj
 				(*(ObjMonologueVolumeSpawner**)((u64)object + 0x90))->volume.collisionHeight *= 3;
 			}
 		}
-		*data *= multiplier;
+		if (Contains(include, sizeof(include) / sizeof(const char*), type)) {
+			float multiplier = configuration::rangeMultiplier;
+			if (!Contains(excludeFromStability, sizeof(excludeFromStability) / sizeof(const char*), type) && configuration::popInStabilityMode) {
+				data->Clamp(multiplier);
+			}
+			*data *= multiplier;
+		}
+		if (Contains(enemies, sizeof(enemies) / sizeof(const char*), type)) {
+			*data *= configuration::enemyRangeMultiplier;
+		}
 		//if (configuration::remove2D) {
 		//	float dimensionSize = objDimensions.size();
 		//	float wallJumpSize = objWallJumpsBlocks.size();
@@ -158,7 +151,6 @@ extern "C" {
 		}
 		configuration::rangeMultiplier = reader.GetFloat("popIn", "multiplier", 2.0f);
 		configuration::enemyRangeMultiplier = reader.GetFloat("popIn", "enemyMultiplier", 1.0f);
-		configuration::collectibleRangeMultiplier = reader.GetFloat("popIn", "collectibleMultiplier", 5.0f);
 		configuration::popInStabilityMode = reader.GetBoolean("popIn", "stabilityMode", true);
 		configuration::removeCamTriggers = reader.GetBoolean("objectRemoval", "camTrigger", false);
 		configuration::removeDashPanels = reader.GetBoolean("objectRemoval", "dashPanels", false);

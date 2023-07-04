@@ -44,8 +44,46 @@ const char* enemies[] = {
 	"Rifle",
 	"TheEnd"
 };
-const char* exclude[] = {
-	"SlotStar",
+const char* include[] = {
+	"Ring",
+	"SuperRing",
+	"Kodama",
+	"KodamaNewForm",
+	"MusicMemory"
+	"Path",
+	"PathCircle",
+	"PathConnector",
+	"PathLine",
+	"PathLoop",
+	"PathNode",
+	"PathPolygon",
+	"PathSpiral",
+	"AirFloor",
+	"AirWall",
+	"Balloon",
+	"Spring",
+	"SequenceItem",
+	"PortalBit",
+	"StorageKey",
+	"TreasureChest",
+	"FishCoin",
+	"PowerupSeed",
+	"DashPanel",
+	"JumpBoard",
+	"Fan",
+	"IslandSpring",
+	"IslandUpReel",
+	"UpReel",
+	"Pulley",
+	"PulleyColumn",
+	"DashRing",
+	"GrindBooster",
+	"TwoWayGrindBooster",
+	"DashRoller",
+	"WallJumpBlock",
+	"GimmickInfo",
+	"SlashCommon",
+	"GuideLight"
 };
 const char* collectibles[] = {
 	"SequenceItem",
